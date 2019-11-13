@@ -2,9 +2,10 @@ Puppet::Functions.create_function(:'vault_lookup::lookup') do
   dispatch :lookup do
     param 'String', :path
     optional_param 'String', :vault_url
+    optional_param 'String', :item
   end
 
-  def lookup(path, vault_url = nil)
+  def lookup(path, vault_url = nil, item = nil)
     if vault_url.nil?
       Puppet.debug 'No Vault address was set on function, defaulting to value from VAULT_ADDR env value'
       vault_url = ENV['VAULT_ADDR']
@@ -29,10 +30,20 @@ Puppet::Functions.create_function(:'vault_lookup::lookup') do
       raise Puppet::Error, append_api_errors(message, secret_response)
     end
 
-    begin
-      data = JSON.parse(secret_response.body)['data']
-    rescue StandardError
-      raise Puppet::Error, 'Error parsing json secret data from vault response'
+    if item.nil?
+      begin
+        data = JSON.parse(secret_response.body)['data']
+      rescue StandardError
+        raise Puppet::Error, 'Error parsing json secret data from vault response'
+      end
+    else
+      begin
+        jsondata = JSON.parse(secret_response.body)['data']
+        value = jsondata[item]
+        data = value
+      rescue StandardError
+        raise Puppet::Error, 'Error parsing json secret data from vault response'
+      end
     end
 
     Puppet::Pops::Types::PSensitiveType::Sensitive.new(data)
