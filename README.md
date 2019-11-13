@@ -65,7 +65,7 @@ $ vault auth enable cert
   After cert auth has been enabled for Vault, upload the CA certificate from
   your Puppet Server to Vault and add it as a trusted certificate.
 
-```sh
+```bash
 $ vault write auth/cert/certs/puppetserver \
     display_name=puppet \
     policies=prod,test \
