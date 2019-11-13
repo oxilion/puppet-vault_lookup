@@ -85,7 +85,7 @@ In your manifests, call the `vault_lookup::lookup` function using the Deferred
 type. For example:
 
 ```puppet
-$d = Deferred('vault_lookup::lookup', ["secret/test", 'https://vault.hostname:8200'])
+$d = Deferred('vault_lookup::lookup', ["secret/test", 'https://vault.hostname:8200'], 'ItemName')
 
 node default {
   notify { example :
@@ -103,6 +103,10 @@ You can also choose not to specify the Vault URL, and then Puppet will use the
 `VAULT_ADDR` environment variable. This will be either set on the command line, or
 set in the service config file for Puppet, on Debian `/etc/default/puppet`, on RedHat
 `/etc/sysconfig/puppet`:
+
+You can also choose not to specify the ItemName. In that case the whole secret will be 
+fetched as json data. It is currently not possible to unpack this json in a deferred 
+function. That was the main reason to implement this "Item" lookup function.
 
 ```
 $d = Deferred('vault_lookup::lookup', ["secret/test"])
