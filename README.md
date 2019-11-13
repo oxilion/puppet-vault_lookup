@@ -65,7 +65,7 @@ $ vault auth enable cert
   After cert auth has been enabled for Vault, upload the CA certificate from
   your Puppet Server to Vault and add it as a trusted certificate.
 
-```
+```shell
 $ vault write auth/cert/certs/puppetserver \
     display_name=puppet \
     policies=prod,test \
@@ -108,7 +108,7 @@ You can also choose not to specify the ItemName. In that case the whole secret w
 fetched as json data. It is currently not possible to unpack this json in a deferred 
 function. That was the main reason to implement this "Item" lookup function.
 
-```
+```puppet
 $d = Deferred('vault_lookup::lookup', ["secret/test"])
 
 node default {
