@@ -30,6 +30,7 @@ controls.
 This is expected to be run using the `Deferred` type, which requires Puppet
 6.0.0 or later, and of course [Vault](https://www.vaultproject.io/) to store the
 data.
+This module ONLY works with v2 of the kv engine (versioned secrets)
 
 ## Setup
 
@@ -85,7 +86,7 @@ In your manifests, call the `vault_lookup::lookup` function using the Deferred
 type. For example:
 
 ```puppet
-$d = Deferred('vault_lookup::lookup', ["secret/test", 'https://vault.hostname:8200'], 'ItemName')
+$d = Deferred('vault_lookup::lookup', ["secret/data/test", 'https://vault.hostname:8200'], 'ItemName')
 
 node default {
   notify { example :
@@ -109,7 +110,7 @@ fetched as json data. It is currently not possible to unpack this json in a defe
 function. That was the main reason to implement this "Item" lookup function.
 
 ```puppet
-$d = Deferred('vault_lookup::lookup', ["secret/test"])
+$d = Deferred('vault_lookup::lookup', ["secret/data/test"])
 
 node default {
   notify { example :
