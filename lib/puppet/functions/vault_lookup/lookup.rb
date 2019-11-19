@@ -32,13 +32,13 @@ Puppet::Functions.create_function(:'vault_lookup::lookup') do
 
     if item.nil?
       begin
-        data = JSON.parse(secret_response.body)['data']
+        data = JSON.parse(secret_response.body)['data']['data']
       rescue StandardError
         raise Puppet::Error, 'Error parsing json secret data from vault response'
       end
     else
       begin
-        jsondata = JSON.parse(secret_response.body)['data']
+        jsondata = JSON.parse(secret_response.body)['data']['data']
         value = jsondata[item]
         data = value
       rescue StandardError
