@@ -12,7 +12,7 @@ Puppet::Functions.create_function(:'vault_lookup::lookup') do
       raise Puppet::Error, 'No vault_url given and VAULT_ADDR env variable not set' if vault_url.nil?
     end
 
-    uri = URI(vault_url)
+    uri = URI(URI::encode(vault_url))
     # URI is used here to just parse the vault_url into a host string
     # and port; it's possible to generate a URI::Generic when a scheme
     # is not defined, so double check here to make sure at least
