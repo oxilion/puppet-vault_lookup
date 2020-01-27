@@ -12,7 +12,7 @@ Puppet::Functions.create_function(:'vault_lookup::lookup') do
       raise Puppet::Error, 'No vault_url given and VAULT_ADDR env variable not set' if vault_url.nil?
     end
 
-    uri = URI(URI::encode(vault_url))
+    uri = URI(vault_url)
     # URI is used here to just parse the vault_url into a host string
     # and port; it's possible to generate a URI::Generic when a scheme
     # is not defined, so double check here to make sure at least
@@ -24,7 +24,8 @@ Puppet::Functions.create_function(:'vault_lookup::lookup') do
 
     token = get_auth_token(connection)
 
-    secret_response = connection.get("/v1/#{path}", 'X-Vault-Token' => token)
+    encpath = URI::encode(path)
+    secret_response = connection.get("/v1/#{encpath}", 'X-Vault-Token' => token)
     unless secret_response.is_a?(Net::HTTPOK)
       message = "Received #{secret_response.code} response code from vault at #{uri.host} for secret lookup"
       raise Puppet::Error, append_api_errors(message, secret_response)
